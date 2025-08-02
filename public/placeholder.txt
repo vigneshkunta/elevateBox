@@ -1,0 +1,2 @@
+This folder will contain static assets like images and icons.
+You can add your logo and other static files here.
