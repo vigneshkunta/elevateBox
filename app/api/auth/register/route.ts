@@ -7,7 +7,6 @@ export async function POST(request: NextRequest) {
   try {
     const { name, username, email, password, role } = await request.json()
 
-    // Validate input
     if (!name || !username || !email || !password || !role) {
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -15,7 +14,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate role
     if (!['instructor', 'student'].includes(role)) {
       return NextResponse.json(
         { error: 'Invalid role' },
@@ -25,7 +23,6 @@ export async function POST(request: NextRequest) {
 
     await connectDB()
 
-    // Check if user already exists
     const existingUser = await User.findOne({
       $or: [{ email }, { username }]
     })
@@ -37,10 +34,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Create user
     const user = await User.create({
       name,
       username,
@@ -49,7 +44,6 @@ export async function POST(request: NextRequest) {
       role,
     })
 
-    // Remove password from response
     const { password: _, ...userWithoutPassword } = user.toObject()
 
     return NextResponse.json(
